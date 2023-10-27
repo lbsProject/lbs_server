@@ -9,7 +9,6 @@ public class LbsApplication {
 	public static void main(String[] args) {
 
 		SpringApplication.run(LbsApplication.class, args);
-		System.out.println();
 	}
 
 }
