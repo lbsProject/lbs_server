@@ -14,6 +14,6 @@ public class BoardController{
     private BoardDAO_jpa boardDAO_jpa;
 
     public static void printMsg(){
-        System.out.println("테스트");
+        System.out.println("테스트 마스터");
     }
 }
