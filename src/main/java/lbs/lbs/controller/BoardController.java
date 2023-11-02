@@ -15,5 +15,6 @@ public class BoardController{
 
     public static void printMsg(){
         System.out.println("테스트 s0nnyday");
+
     }
 }
