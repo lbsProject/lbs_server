@@ -8,7 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LbsApplication {
 
 	public static void main(String[] args) {
-		System.out.println("테스트4444");
+		System.out.println("테스트222222222222");
+
 		SpringApplication.run(LbsApplication.class, args);
 	}
 }
