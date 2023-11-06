@@ -72,7 +72,7 @@ public class ItemParsing {
                 String armorStr = extractStatValue(itemDescription, "방어력");
                 String armor_penetrationStr = extractStatValue(itemDescription, "방어구 관통력");
                 String ability_powerStr = extractStatValue(itemDescription, "주문력");
-                String movement_speedStr = extractStatValue(itemDescription, "이동속도");
+                String movement_speedStr = extractStatValue(itemDescription, "이동 속도");
                 String mana_regenerationStr = extractStatValue(itemDescription, "기본 마나 재생");
                 String health_regenerationStr = extractStatValue(itemDescription, "기본 체력 재생");
                 String life_stealStr = extractStatValue(itemDescription, "생명력 흡수");
@@ -89,7 +89,8 @@ public class ItemParsing {
                 int totalValue = goldObject.get("total").getAsInt();
                 int sellValue = goldObject.get("sell").getAsInt();
 
-                String sprite_imageStr = extractStatValue(itemDescription, "sprite");
+                JsonObject imageObject = itemData.getAsJsonObject("image");
+                String imageStr = imageObject.get("full").getAsString();
 
                 int attack_damage = parseStatValue(attack_damageStr);
                 int physical_penetration = parseStatValue(physical_penetrationStr);
@@ -141,7 +142,7 @@ public class ItemParsing {
                 preparedStatement.setInt(27, baseValue);
                 preparedStatement.setInt(28, totalValue);
                 preparedStatement.setInt(29, sellValue);
-                preparedStatement.setString(30, sprite_imageStr);
+                preparedStatement.setString(30, imageStr);
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
             }

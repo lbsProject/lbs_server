@@ -44,5 +44,5 @@ public class ItemInfo {
     private int base_price;
     private int total_price;
     private int sell_price;
-    private String sprite_image;
+    private String image;
 }
