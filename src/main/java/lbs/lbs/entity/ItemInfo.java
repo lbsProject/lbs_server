@@ -10,8 +10,7 @@ import lombok.Getter;
 @Getter
 public class ItemInfo {
 
-    @Id @GeneratedValue
-    @Column(name = "item_info_id")
+    @Id @Column(name = "item_info_id")
     private Long id;
 
     private String name;
