@@ -1,4 +1,4 @@
-package lbs.lbs.domain;
+package lbs.lbs.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
