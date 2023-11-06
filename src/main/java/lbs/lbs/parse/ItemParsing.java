@@ -1,17 +1,26 @@
 package lbs.lbs.parse;
 
 import java.io.FileReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+
 public class ItemParsing {
     public static void main(String[] args) {
         String jsonFilePath = "C:\\Users\\82102\\Desktop\\롤 프로젝트\\dragontail-13.19.1\\13.19.1\\data\\ko_KR\\item.json"; // JSON 파일 경로
+        String jsonData = readJsonFile(jsonFilePath);
+
+        ItemParsing parser = new ItemParsing();
+        parser.parseAndStoreItems(jsonData, jsonFilePath);
+    }
+
+    public void parseAndStoreItems(String jsonData, String jsonFilePath) {
         String dbUrl = "jdbc:mysql://localhost:3306/lbs_project"; // MySQL 데이터베이스 URL
         String dbUser = "root"; // MySQL 사용자 이름
         String dbPassword = "1234"; // MySQL 비밀번호
@@ -26,8 +35,18 @@ public class ItemParsing {
 
             // 데이터베이스에 데이터 저장
             for (String itemId : jsonObject.keySet()) {
+                System.out.println("itemId : " + itemId);
+                Long id = Long.parseLong(itemId);
                 String grade = "";
-                JsonObject itemData = jsonObject.getAsJsonObject(itemId);
+                //여기서 에러 발생
+                // java.lang.ClassCastException: class com.google.gson.JsonPrimitive cannot be cast to class com.google.gson.JsonObject (com.google.gson.JsonPrimitive and com.google.gson.JsonObject are in unnamed module of loader 'app')
+                JsonObject itemData;
+                try {
+                     itemData = jsonObject.getAsJsonObject(itemId);
+                }catch (ClassCastException e) {
+                    System.err.println("Invalid JSON data for item: " + itemId);
+                    continue; // 이 항목은 건너뜁니다.
+                }
                 String itemName = itemData.get("name").getAsString();
                 String itemDescription = itemData.get("description").getAsString();
 
@@ -84,13 +103,13 @@ public class ItemParsing {
 
                 // 데이터베이스에 삽입
                 String query = "INSERT INTO item_info " +
-                        "(id, name, grade, grade_effect, passive, attack_damage, attack_speed, physical_penetration, magic_penetration, " +
+                        "(item_info_id, name, grade, grade_effect, passive, attack_damage, attack_speed, physical_penetration, magic_penetration, " +
                         "skill_haste, critical_chance, critical_damage, health, magic_resistance, armor, armor_penetration, ability_power, " +
                         "movement_speed, mana_regeneration, health_regeneration, life_steal, health_regen_and_shield, mana, tenacity, " +
                         "all_damage_life_steal, gold_per_10_seconds, base_price, total_price, sell_price, sprite_image) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
-                preparedStatement.setString(1, itemId);
+                preparedStatement.setLong(1, id);
                 preparedStatement.setString(2, itemName);
                 preparedStatement.setString(3, grade);
                 preparedStatement.setString(4, grade_effectStr);
@@ -150,5 +169,14 @@ public class ItemParsing {
         }
 
         return 0;
+    }
+
+    private static String readJsonFile(String filePath) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }
