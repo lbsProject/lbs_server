@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -38,8 +40,6 @@ public class ItemParsing {
                 System.out.println("itemId : " + itemId);
                 Long id = Long.parseLong(itemId);
                 String grade = "";
-                //여기서 에러 발생
-                // java.lang.ClassCastException: class com.google.gson.JsonPrimitive cannot be cast to class com.google.gson.JsonObject (com.google.gson.JsonPrimitive and com.google.gson.JsonObject are in unnamed module of loader 'app')
                 JsonObject itemData;
                 try {
                      itemData = jsonObject.getAsJsonObject(itemId);
@@ -57,8 +57,8 @@ public class ItemParsing {
 
                 // 스탯 정보 추출
                 String grade_effectStr = extractStatValue(itemDescription, "");
-                String passiveStr = extractStatValue(itemDescription, "");
-
+                List<String> passiveList = extractPassive(itemDescription);
+                String passiveStr = String.join("\n", passiveList);
 
                 String attack_damageStr = extractStatValue(itemDescription, "공격력");
                 String attack_speedStr = extractStatValue(itemDescription, "공격 속도");
@@ -81,10 +81,15 @@ public class ItemParsing {
                 String tenacityStr = extractStatValue(itemDescription, "강인함");
                 String all_damage_life_stealStr = extractStatValue(itemDescription, "모든 피해 흡혈");
                 String gold_per_10_secondsStr = extractStatValue(itemDescription, "10초당 골드");
-                String base_priceStr = extractStatValue(itemDescription, "기본 가격");
-                String total_priceStr = extractStatValue(itemDescription, "총 가격");
-                String sell_priceStr = extractStatValue(itemDescription, "판매 가격");
-                String sprite_imageStr = extractStatValue(itemDescription, "스프라이트 이미지");
+
+                // "gold" 객체 추출
+                JsonObject goldObject = itemData.getAsJsonObject("gold");
+                // "base," "total," 및 "sell" 값 추출
+                int baseValue = goldObject.get("base").getAsInt();
+                int totalValue = goldObject.get("total").getAsInt();
+                int sellValue = goldObject.get("sell").getAsInt();
+
+                String sprite_imageStr = extractStatValue(itemDescription, "sprite");
 
                 int attack_damage = parseStatValue(attack_damageStr);
                 int physical_penetration = parseStatValue(physical_penetrationStr);
@@ -97,9 +102,7 @@ public class ItemParsing {
                 int movement_speed = parseStatValue(movement_speedStr);
                 int mana = parseStatValue(manaStr);
                 int gold_per_10_seconds = parseStatValue(gold_per_10_secondsStr);
-                int base_price = parseStatValue(base_priceStr);
-                int total_price = parseStatValue(total_priceStr);
-                int sell_price = parseStatValue(sell_priceStr);
+
 
                 // 데이터베이스에 삽입
                 String query = "INSERT INTO item_info " +
@@ -135,9 +138,9 @@ public class ItemParsing {
                 preparedStatement.setString(24, tenacityStr);
                 preparedStatement.setString(25, all_damage_life_stealStr);
                 preparedStatement.setInt(26, gold_per_10_seconds);
-                preparedStatement.setInt(27, base_price);
-                preparedStatement.setInt(28, total_price);
-                preparedStatement.setInt(29, sell_price);
+                preparedStatement.setInt(27, baseValue);
+                preparedStatement.setInt(28, totalValue);
+                preparedStatement.setInt(29, sellValue);
                 preparedStatement.setString(30, sprite_imageStr);
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
@@ -152,14 +155,36 @@ public class ItemParsing {
 
     // 스탯 정보 추출을 위한 도우미 메서드
     private static String extractStatValue(String description, String statName) {
-        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(statName + " <attention>(\\d*)</attention>");
-        java.util.regex.Matcher matcher = pattern.matcher(description);
+        java.util.regex.Pattern patternAttention = java.util.regex.Pattern.compile(statName + " <attention>([\\d%]+)</attention>");
+        java.util.regex.Pattern patternNerfedStat = java.util.regex.Pattern.compile(statName + " <nerfedStat>([\\d%]+)</nerfedStat>");
+        java.util.regex.Pattern patternBuffedStat = java.util.regex.Pattern.compile(statName + " <buffedStat>([\\d%]+)</buffedStat>");
 
-        if (matcher.find()) {
-            return matcher.group(1);
+        java.util.regex.Matcher matcherAttention = patternAttention.matcher(description);
+        java.util.regex.Matcher matcherNerfedStat = patternNerfedStat.matcher(description);
+        java.util.regex.Matcher matcherBuffedStat = patternBuffedStat.matcher(description);
+
+        if (matcherAttention.find()) {
+            return matcherAttention.group(1);
+        } else if (matcherNerfedStat.find()) {
+            return matcherNerfedStat.group(1);
+        } else if (matcherBuffedStat.find()) {
+            return matcherBuffedStat.group(1);
         }
 
-        return ""; // 스탯 정보가 없는 경우 빈 문자열 반환
+        return "0"; // 스탯 정보가 없는 경우 빈 문자열 반환
+    }
+
+    private static List<String> extractPassive(String description) {
+        List<String> passiveSections = new ArrayList<>();
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("<passive>(.*?)</mainText>");
+        java.util.regex.Matcher matcher = pattern.matcher(description);
+
+        while (matcher.find()) {
+            String passiveSection = matcher.group(1).trim();
+            passiveSections.add(passiveSection);
+        }
+
+        return passiveSections;
     }
 
     // 스탯 값을 정수로 파싱하는 도우미 메서드
