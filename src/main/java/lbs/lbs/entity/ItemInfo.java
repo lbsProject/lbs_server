@@ -16,7 +16,10 @@ public class ItemInfo {
     private String name;
     private String grade;
     private String grade_effect;
+
+    @Column(length = 1024)
     private String passive;
+
     private int attack_damage;
     private String attack_speed;
     private int physical_penetration;
