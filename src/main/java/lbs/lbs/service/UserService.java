@@ -1,6 +1,6 @@
 package lbs.lbs.service;
 
-import lbs.lbs.domain.User;
+import lbs.lbs.entity.User;
 import lbs.lbs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

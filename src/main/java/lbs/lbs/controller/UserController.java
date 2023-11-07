@@ -1,6 +1,6 @@
 package lbs.lbs.controller;
 
-import lbs.lbs.domain.User;
+import lbs.lbs.entity.User;
 import lbs.lbs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

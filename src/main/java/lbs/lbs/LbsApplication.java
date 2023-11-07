@@ -1,6 +1,6 @@
 package lbs.lbs;
 
-import lbs.lbs.controller.BoardController;
+//import lbs.lbs.controller.BoardController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
