@@ -110,7 +110,7 @@ public class ItemParsing {
                         "(item_info_id, name, grade, grade_effect, passive, attack_damage, attack_speed, physical_penetration, magic_penetration, " +
                         "skill_haste, critical_chance, critical_damage, health, magic_resistance, armor, armor_penetration, ability_power, " +
                         "movement_speed, mana_regeneration, health_regeneration, life_steal, health_regen_and_shield, mana, tenacity, " +
-                        "all_damage_life_steal, gold_per_10_seconds, base_price, total_price, sell_price, sprite_image) " +
+                        "all_damage_life_steal, gold_per_10_seconds, base_price, total_price, sell_price, image) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
                 preparedStatement.setLong(1, id);
