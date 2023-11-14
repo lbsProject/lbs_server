@@ -1,30 +1,60 @@
 package lbs.lbs.entity;
 
 import jakarta.persistence.*;
+import lbs.lbs.dto.UserRequestDto;
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.lang.Nullable;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Getter
 public class User {
     @Id @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Nullable
+    @Column(name = "USER_ID", unique = true, nullable = false)
     private String userId;
-    @Nullable
-    private String username;
+
+    @Column(unique = true, nullable = false)
+    private String userNickName;
+
     private String email;
-    @Nullable
+
+    @Column(nullable = false)
     private String password;
+
     private int birth;
     private String phone;
-    private Authority auth;
+
+    @Enumerated(EnumType.STRING)
+    private Authority auth = Authority.USER;
+
     private int pwErrChk;
     private boolean userYN;
-    private JoinType joinType;
+
+    @Enumerated(EnumType.STRING)
+    private JoinType joinType = JoinType.LBS;
     // 게터, 세터 및 다른 필수 메서드
+
+    private LocalDateTime signUpTime;
+
+    public User() {
+    }
+    public User(UserRequestDto userRequestDto){
+
+        this.userId = userRequestDto.getUserId();
+        this.userNickName = userRequestDto.getUserNickName();
+        this.email = userRequestDto.getEmail();
+        this.password = userRequestDto.getPassword();
+        this.birth = userRequestDto.getBirth();
+        this.phone = userRequestDto.getPhone();
+        this.auth = Authority.USER;
+        this.pwErrChk = 0;
+        this.userYN = true;
+        this.joinType = JoinType.LBS;
+        this.signUpTime = LocalDateTime.now();
+
+    }
 
 }
