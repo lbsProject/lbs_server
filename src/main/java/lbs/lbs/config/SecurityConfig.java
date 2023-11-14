@@ -34,9 +34,10 @@ public class SecurityConfig  {
 
                 .formLogin((formLogin) -> {
                     formLogin
-                            .loginPage("/loginForm") // 권한이 필요한 요청은 해당 url로 리다이렉트
+                            .loginPage("/login") // 권한이 필요한 요청은 해당 url로 리다이렉트
+                            .usernameParameter("userId") // PrincipalDetailsService에서 userName 대신 userId를 받도록 수정.
                             .loginProcessingUrl("/login") // login 주소가 호출되면 시큐리티가 낚아채서 대신 로그인을 해준다.
-                            .defaultSuccessUrl("/"); //로그인 성공시 /주소로 이동
+                            .defaultSuccessUrl("/"); //로그인 성공시 로그인 페이지로 들어가기 전 페이지로 보내줌
 
                 })
                 .build();
