@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>회원가입 페이지</title>
@@ -7,14 +7,14 @@
 <body>
 <h1>signUp</h1>
 <hr/>
-<form action="/join" method="Post">
-  <input type="text" name="userId" placeholder="id">
-  <input type="password" name="password" placeholder="password">
-  <input type="text" name="username" placeholder="userName">
-  <input type="email" name="email" placeholder="email">
-  <input type="number" name="birth" placeholder="birth">
-  <input type="tel" name="phone" placeholder="phone">
-  <button>회원가입</button>
+<form th:object="${userRequestDto}" th:action="@{/join}" method="post" >
+  <input type="text" th:field="*{userId}" name="userId" placeholder="아이디">
+  <input type="password" th:field="*{password}" name="password" placeholder="비밀번호">
+  <input type="text" th:field="*{userNickName}" name="userNickName" placeholder="닉네임">
+  <input type="email" th:field="*{email}" name="email" placeholder="이메일">
+  <input type="number" th:field="*{birth}" name="birth" placeholder="생년월일">
+  <input type="tel" th:field="*{phone}" name="phone" placeholder="전화번호">
+  <button type="submit">회원가입</button>
 </form>
 </body>
 </html>
