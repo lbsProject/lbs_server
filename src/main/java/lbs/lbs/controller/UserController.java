@@ -1,9 +1,11 @@
 package lbs.lbs.controller;
 
+import lbs.lbs.config.auth.PrincipalDetails;
 import lbs.lbs.dto.UserRequestDto;
 import lbs.lbs.entity.User;
 import lbs.lbs.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,7 +39,8 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public @ResponseBody String user() {
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        System.out.println("principalDetails : " + principalDetails.getUser());
         return "유저 페이지입니다.";
     }
 
@@ -45,7 +48,8 @@ public class UserController {
     public @ResponseBody String join(UserRequestDto userRequestDto) {
 
         String bcPassword = bCryptPasswordEncoder.encode(userRequestDto.getPassword());
-        userRequestDto.bcPassword(bcPassword);
+        userRequestDto.setBcPassword(bcPassword);
+        userRequestDto.setJoinType("LBS");
         User user = new User(userRequestDto);
         userRepository.save(user);
 
