@@ -3,9 +3,11 @@ package lbs.lbs.config.auth;
 import lbs.lbs.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 //시큐리티가 /login 주소 요청이 오면 낚아채서 로그인을 진행시킨다
 //로그인이 진행이 완료가 되면 session을 만들어 준다. (Security ContextHolder라는 키값에 세션정보를 저장시킨다. )
@@ -17,13 +19,24 @@ import java.util.Collection;
 // PrincipalDetails이 UserDetails가 되기 때문
 
 
-public class PrincipalDetails implements UserDetails {
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private User user;
+    private Map<String, Object> attributes;
 
+    //일반 로그인 시 생성자
     public PrincipalDetails(User user) {
         this.user = user;
     }
+
+    
+    //OAuth 로그인 시 생성자
+    public PrincipalDetails(User user,Map<String, Object> attributes)
+    {
+        this.user = user;
+        this.attributes = attributes;
+    }
+
 
     //해당 유저의 권한을 리턴하는 곳
     @Override
@@ -40,6 +53,10 @@ public class PrincipalDetails implements UserDetails {
             }
         });
         return collect;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     @Override
@@ -75,4 +92,16 @@ public class PrincipalDetails implements UserDetails {
         //해서 1년이 지났다면 false 이런식으로 사용할 수 있다.
         return true;
     }
+
+    //OAuth2User 클래스 Override
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
 }
