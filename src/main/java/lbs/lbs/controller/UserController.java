@@ -1,6 +1,5 @@
 package lbs.lbs.controller;
 
-import jakarta.validation.Valid;
 import lbs.lbs.dto.UserRequestDto;
 import lbs.lbs.entity.User;
 import lbs.lbs.repository.UserRepository;
