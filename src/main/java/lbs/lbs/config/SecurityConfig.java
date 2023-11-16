@@ -2,6 +2,7 @@ package lbs.lbs.config;
 
 import lbs.lbs.config.oauth.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,10 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig  {
 
     private final PrincipalOauth2UserService principalOauth2UserService;
-    @Bean
-    public BCryptPasswordEncoder encoderPwd() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
