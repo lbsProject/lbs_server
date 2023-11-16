@@ -2,6 +2,7 @@ package lbs.lbs.entity;
 
 import jakarta.persistence.*;
 import lbs.lbs.dto.UserRequestDto;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -32,8 +33,7 @@ public class User {
     private int pwErrChk;
     private boolean userYN;
 
-    @Enumerated(EnumType.STRING)
-    private JoinType joinType = JoinType.LBS;
+    private String joinType;
     // 게터, 세터 및 다른 필수 메서드
 
     private LocalDateTime signUpTime;
@@ -51,7 +51,7 @@ public class User {
         this.auth = "USER";
         this.pwErrChk = 0;
         this.userYN = true;
-        this.joinType = JoinType.LBS;
+        this.joinType = userRequestDto.getJoinType();
         this.signUpTime = LocalDateTime.now();
 
     }
