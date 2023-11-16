@@ -20,7 +20,7 @@ public class UserController {
         return "home";
     }
 
-    @GetMapping("/loginForm")
+    @GetMapping("/login")
     public String loginForm() {
         return "loginForm";
     }

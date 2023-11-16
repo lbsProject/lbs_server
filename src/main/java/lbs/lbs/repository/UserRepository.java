@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     // 추가적인 쿼리 메서드 정의 가능
+
+    public User findByUserId(String userId);
+
 }

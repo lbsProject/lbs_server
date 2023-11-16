@@ -27,8 +27,7 @@ public class User {
     private int birth;
     private String phone;
 
-    @Enumerated(EnumType.STRING)
-    private Authority auth = Authority.USER;
+    private String auth;
 
     private int pwErrChk;
     private boolean userYN;
@@ -49,7 +48,7 @@ public class User {
         this.password = userRequestDto.getPassword();
         this.birth = userRequestDto.getBirth();
         this.phone = userRequestDto.getPhone();
-        this.auth = Authority.USER;
+        this.auth = "USER";
         this.pwErrChk = 0;
         this.userYN = true;
         this.joinType = JoinType.LBS;
