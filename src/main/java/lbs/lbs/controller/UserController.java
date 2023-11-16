@@ -31,6 +31,16 @@ public class UserController {
         return "joinForm";
     }
 
+    @GetMapping("/admin")
+    public @ResponseBody String admin() {
+        return "어드민 페이지입니다.";
+    }
+
+    @GetMapping("/user")
+    public @ResponseBody String user() {
+        return "유저 페이지입니다.";
+    }
+
     @PostMapping("/join")
     public @ResponseBody String join(UserRequestDto userRequestDto) {
 
