@@ -1,40 +1,52 @@
 package lbs.lbs.controller;
 
+import jakarta.validation.Valid;
+import lbs.lbs.dto.UserRequestDto;
 import lbs.lbs.entity.User;
-import lbs.lbs.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lbs.lbs.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/users")
+@Controller
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    private UserService userService;
 
-    @PostMapping("/createUser")
-    public User createUser(
-            @RequestParam("username") String username,
-            @RequestParam("email") String email) {
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        return userService.createUser(user);
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    @GetMapping({"","/"})
+    public String index() {
+        return "home";
     }
 
-    @GetMapping("/{id}")
-    public User getUser(@PathVariable Long id) {
-        return userService.getUserById(id);
+    @GetMapping("/loginForm")
+    public String loginForm() {
+        return "loginForm";
     }
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    @GetMapping("/joinForm")
+    public String joinForm(Model model) {
+        model.addAttribute("userRequestDto", new UserRequestDto());
+        return "joinForm";
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    @PostMapping("/join")
+    public @ResponseBody String join(UserRequestDto userRequestDto) {
+
+        String bcPassword = bCryptPasswordEncoder.encode(userRequestDto.getPassword());
+        userRequestDto.bcPassword(bcPassword);
+        User user = new User(userRequestDto);
+        userRepository.save(user);
+
+        return "join";
     }
 }
+
+
+
+
+
+
+
