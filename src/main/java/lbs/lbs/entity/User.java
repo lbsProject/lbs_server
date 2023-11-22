@@ -2,6 +2,7 @@ package lbs.lbs.entity;
 
 import jakarta.persistence.*;
 import lbs.lbs.dto.UserRequestDto;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -19,22 +20,24 @@ public class User {
     @Column(unique = true, nullable = false)
     private String userNickName;
 
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
     private int birth;
+
+    @Column(nullable = false)
     private String phone;
 
-    @Enumerated(EnumType.STRING)
-    private Authority auth = Authority.USER;
+    private String auth;
 
     private int pwErrChk;
+
     private boolean userYN;
 
-    @Enumerated(EnumType.STRING)
-    private JoinType joinType = JoinType.LBS;
+    private String joinType;
     // 게터, 세터 및 다른 필수 메서드
 
     private LocalDateTime signUpTime;
@@ -49,10 +52,10 @@ public class User {
         this.password = userRequestDto.getPassword();
         this.birth = userRequestDto.getBirth();
         this.phone = userRequestDto.getPhone();
-        this.auth = Authority.USER;
+        this.auth = "USER";
         this.pwErrChk = 0;
         this.userYN = true;
-        this.joinType = JoinType.LBS;
+        this.joinType = userRequestDto.getJoinType();
         this.signUpTime = LocalDateTime.now();
 
     }

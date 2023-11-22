@@ -1,10 +1,11 @@
 package lbs.lbs.controller;
 
-import jakarta.validation.Valid;
+import lbs.lbs.config.auth.PrincipalDetails;
 import lbs.lbs.dto.UserRequestDto;
 import lbs.lbs.entity.User;
 import lbs.lbs.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,7 @@ public class UserController {
         return "home";
     }
 
-    @GetMapping("/loginForm")
+    @GetMapping("/login")
     public String loginForm() {
         return "loginForm";
     }
@@ -32,11 +33,23 @@ public class UserController {
         return "joinForm";
     }
 
+    @GetMapping("/admin")
+    public @ResponseBody String admin() {
+        return "어드민 페이지입니다.";
+    }
+
+    @GetMapping("/user")
+    public @ResponseBody String user(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        System.out.println("principalDetails : " + principalDetails.getUser());
+        return "유저 페이지입니다.";
+    }
+
     @PostMapping("/join")
     public @ResponseBody String join(UserRequestDto userRequestDto) {
 
         String bcPassword = bCryptPasswordEncoder.encode(userRequestDto.getPassword());
-        userRequestDto.bcPassword(bcPassword);
+        userRequestDto.setBcPassword(bcPassword);
+        userRequestDto.setJoinType("LBS");
         User user = new User(userRequestDto);
         userRepository.save(user);
 

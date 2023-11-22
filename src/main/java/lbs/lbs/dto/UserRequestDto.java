@@ -9,15 +9,13 @@ public class UserRequestDto {
 
     private String userId;
     private String userNickName;
-
     private String email;
-
     private String password;
-
+    private String joinType;
     private int birth;
     private String phone;
 
-    public void bcPassword(String bcPassword) {
+    public void setBcPassword(String bcPassword) {
         this.password = bcPassword;
     }
 
