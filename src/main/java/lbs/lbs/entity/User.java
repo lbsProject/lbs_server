@@ -20,17 +20,21 @@ public class User {
     @Column(unique = true, nullable = false)
     private String userNickName;
 
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
     private int birth;
+
+    @Column(nullable = false)
     private String phone;
 
     private String auth;
 
     private int pwErrChk;
+
     private boolean userYN;
 
     private String joinType;
