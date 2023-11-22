@@ -16,6 +16,7 @@ public class ChampionImg {
     private String champ_name;
 
     @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] champ_img;
 
 }
