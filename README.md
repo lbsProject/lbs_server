@@ -3,6 +3,8 @@
 * [API 문서]()
 * [API진척도 & Postman Runner]()
 
+## [(필독)참고할 프로젝트 리드미 양식](https://github.com/InventoryBox/InventoryBox_Server)
+
 ## 📑프로젝트 설명
 * op.gg 같은 리그오브레전드 소환서 정보 조회 사이트
 

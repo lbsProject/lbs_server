@@ -1,6 +1,6 @@
 package lbs.lbs;
 
-import lbs.lbs.controller.BoardController;
+//import lbs.lbs.controller.BoardController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LbsApplication {
 
 	public static void main(String[] args) {
-		System.out.println("테스트222222222222");
+
 		SpringApplication.run(LbsApplication.class, args);
 	}
 }
