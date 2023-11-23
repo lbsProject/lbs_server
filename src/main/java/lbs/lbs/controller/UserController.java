@@ -4,7 +4,9 @@ import lbs.lbs.config.auth.PrincipalDetails;
 import lbs.lbs.dto.UserRequestDto;
 import lbs.lbs.entity.User;
 import lbs.lbs.repository.UserRepository;
+import lbs.lbs.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,8 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserService userService;
+
     @GetMapping({"","/"})
     public String index() {
         return "home";
@@ -45,15 +49,9 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public @ResponseBody String join(UserRequestDto userRequestDto) {
+    public ResponseEntity<?> join(UserRequestDto userRequestDto) {
 
-        String bcPassword = bCryptPasswordEncoder.encode(userRequestDto.getPassword());
-        userRequestDto.setBcPassword(bcPassword);
-        userRequestDto.setJoinType("LBS");
-        User user = new User(userRequestDto);
-        userRepository.save(user);
-
-        return "join";
+        return userService.createUser(userRequestDto);
     }
 }
 
