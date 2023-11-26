@@ -1,6 +1,6 @@
 # 롤박사
 * 프로젝트 기간 : 2023.10~
-* [API 문서]()
+* [API 문서](https://github.com/lbsProject/lbs_server/wiki)
 * [API진척도 & Postman Runner]()
 
 ## [(필독)참고할 프로젝트 리드미 양식](https://github.com/InventoryBox/InventoryBox_Server)
