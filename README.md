@@ -12,11 +12,15 @@
 
 ## 🌎Team Role
 ### 강인국
-* 
-### 김영주
-* 
+* Server(Spring Boot)
+* DB 설계 및 구축 
 ### 손지민
-* 
+* Server(Spring Boot)
+* DB 설계 및 구축 
+### 김영주
+* Server(Spring Boot)
+* DB 설계 및 구축 
+
 
 ## ✔️핵심 기능 설명
 1. 소환사 정보 조회
