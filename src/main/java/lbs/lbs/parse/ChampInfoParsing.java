@@ -20,12 +20,13 @@ public class ChampInfoParsing {
     public static void main(String[] args) {
         String jsonFilePath = "C:\\Users\\82102\\Desktop\\롤 프로젝트\\dragontail-13.19.1\\13.19.1\\data\\ko_KR\\champion.json"; // JSON 파일 경로
         String jsonData = readJsonFile(jsonFilePath);
+        String imagePath = "C:\\Users\\82102\\Desktop\\롤 프로젝트\\dragontail-13.19.1\\13.19.1\\img\\champion"; // 이미지 파일이 있는 디렉터리 경로
 
         ChampInfoParsing parser = new ChampInfoParsing();
-        parser.parseAndStoreChampionData(jsonData);
+        parser.parseAndStoreChampionData(jsonData, imagePath);
     }
 
-    public void parseAndStoreChampionData(String jsonData) {
+    public void parseAndStoreChampionData(String jsonData, String imagePath) {
         String dbUrl = "jdbc:mysql://localhost:3306/lbs_project"; // MySQL 데이터베이스 URL
         String dbUser = "root"; // MySQL 사용자 이름
         String dbPassword = "1234"; // MySQL 비밀번호
@@ -43,6 +44,8 @@ public class ChampInfoParsing {
 
                 JsonObject championInfo = championEntry.getValue().getAsJsonObject();
 
+
+
                 // 기본 정보 추출
                 int championId = championInfo.get("key").getAsInt();
                 String enName = championInfo.get("id").getAsString();
@@ -51,9 +54,7 @@ public class ChampInfoParsing {
                 String story = championInfo.get("blurb").getAsString();
                 String partype = championInfo.get("partype").getAsString();
 
-                JsonObject images = championInfo.getAsJsonObject("image");
-                String image = images.get("full").getAsString();
-
+                byte[] imageBytes = Files.readAllBytes(Paths.get(imagePath, enName+".png"));
                 // 스탯 정보 추출
                 JsonObject stats = championInfo.getAsJsonObject("stats");
                 int hp = stats.get("hp").getAsInt();
@@ -90,7 +91,7 @@ public class ChampInfoParsing {
                 preparedStatement.setString(3, koName);
                 preparedStatement.setString(4, story);
                 preparedStatement.setString(5, title);
-                preparedStatement.setString(6, image);
+                preparedStatement.setBytes(6, imageBytes);
                 preparedStatement.setString(7, partype);
                 preparedStatement.setInt(8, hp);
                 preparedStatement.setInt(9, hpPerLevel);

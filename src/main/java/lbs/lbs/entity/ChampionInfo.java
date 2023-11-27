@@ -13,9 +13,8 @@ public class ChampionInfo {
     private String ko_name;
     private String story;
 
-    private String champ_img;
-//    @Lob
-//    private byte[] champ_img;
+    @Lob
+    private byte[] champ_img;
 
     private String title;
     private String par_type;
