@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface SummonerRepository extends JpaRepository<Summoner, String> {
     boolean existsById(String id);
     Optional<Summoner> findById(String id);
+    Optional<Summoner> findByPuuid(String puuid);
 }
