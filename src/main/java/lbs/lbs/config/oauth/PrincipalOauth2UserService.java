@@ -1,6 +1,9 @@
 package lbs.lbs.config.oauth;
 
 import lbs.lbs.config.auth.PrincipalDetails;
+import lbs.lbs.config.oauth.provider.GoogleUserInfo;
+import lbs.lbs.config.oauth.provider.NaverUserInfo;
+import lbs.lbs.config.oauth.provider.OAuth2UserInfo;
 import lbs.lbs.dto.UserRequestDto;
 import lbs.lbs.entity.User;
 import lbs.lbs.repository.UserRepository;
@@ -11,6 +14,9 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,25 +35,47 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         System.out.println("getAttributes : " + oAuth2User.getAttributes());
 
-        String provider = userRequest.getClientRegistration().getClientName(); //google
-        String providerId = oAuth2User.getAttribute("sub");
-        String userId = provider + "_" + providerId;
+        OAuth2UserInfo oAuth2UserInfo = null;
+        if(userRequest.getClientRegistration().getRegistrationId().equals("google")) {
+            System.out.println("구글 로그인 요청");
+            oAuth2UserInfo =  new GoogleUserInfo(oAuth2User.getAttributes());
+        }else if(userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
+            System.out.println("네이버 로그인 요청");
+            oAuth2UserInfo =  new NaverUserInfo((Map)oAuth2User.getAttributes().get("response"));
+        }
+
+
+        String provider = oAuth2UserInfo.getProvider(); //google
+        String providerId = oAuth2UserInfo.getProviderId();
+        String userNickName = oAuth2UserInfo.getNickName();
         String password = bCryptPasswordEncoder.encode("강인국");
-        String email = oAuth2User.getAttribute("email");
-        String username = oAuth2User.getAttribute("name");
+        String email = oAuth2UserInfo.getEmail();
+        String userName = oAuth2UserInfo.getName();
+        int birth = oAuth2UserInfo.getBirth();
+        String phone = oAuth2UserInfo.getPhone();
 
-        UserRequestDto userRequestDto = new UserRequestDto();
-        userRequestDto.setUserId(userId);
-        userRequestDto.setUserNickName(username);
-        userRequestDto.setBirth(0);
-        userRequestDto.setPhone("");
-        userRequestDto.setEmail(email);
-        userRequestDto.setBcPassword(password);
-        userRequestDto.setJoinType(provider);
+        User userEntity = userRepository.findByUserId(providerId);
 
-        User user = new User(userRequestDto);
-        userRepository.save(user);
+        if(userEntity==null) {
+            userEntity = User.builder()
+                    .userId(providerId)
+                    .userNickName(userNickName)
+                    .userName(userName)
+                    .email(email)
+                    .password(password)
+                    .birth(birth)
+                    .phone(phone)
+                    .auth("USER")
+                    .joinType(provider)
+                    .pwErrChk(0)
+                    .signUpTime(LocalDateTime.now())
+                    .userYN(true)
+                    .build();
 
-        return new PrincipalDetails(user, oAuth2User.getAttributes());
+            userRepository.save(userEntity);
+        }
+
+
+        return new PrincipalDetails(userEntity, oAuth2User.getAttributes());
     }
 }
