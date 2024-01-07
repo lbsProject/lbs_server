@@ -10,7 +10,7 @@ import lombok.Setter;
 @Table(name= "champion_img")
 public class ChampionImg {
     @Id @Column
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String champ_name;
